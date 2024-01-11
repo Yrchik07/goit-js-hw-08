@@ -65,25 +65,47 @@ const images = [
   ];
 
   const boxGallery = document.querySelector('.gallery');
-  console.log(boxGallery);
-//   boxGallery.insertAdjacentHTML('beforeend', galleryElementAll());
 
-  
+  boxGallery.insertAdjacentHTML('beforeend', galleryElementAll());
 
-function galleryElement(preview, original, description){
+  boxGallery.addEventListener('click',  originalImg)
+
+  function originalImg(e){
+    e.preventDefault()
+    if(e.target === e.currentTarget) return;
+    const instance = basicLightbox.create(
+      `<img src="${e.target.dataset.source}" width="800" height="600">`,
+  {
+    onShow: instance => {
+    document.addEventListener('keydown', closeModal);
+  },
+  onClose: instance => {
+    document.removeEventListener('keydown', closeModal);
+  },
+},
+  );
+
+    function closeModal(e) {
+      if (e.code === 'Escape') instance.close();
+    }
+
+instance.show()
+  }
+
+function galleryElement(name){
     return `<li class="gallery-item">
       <a class="gallery-link" href="large-image.jpg">
         <img
           class="gallery-image"
-          src="${preview}"
-          data-source="${original}"
-          alt="${description}"
+          src="${name.preview}"
+          data-source="${name.original}"
+          alt="${name.description}"
         />
       </a>
     </li>`;
 }
 
-function galleryElementAll(images) {
-    return images.map(galleryElement).join('');
-  }
-  galleryElementAll();
+function galleryElementAll() {
+   return images.map(galleryElement).join('');
+}
+
